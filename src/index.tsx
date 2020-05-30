@@ -116,9 +116,11 @@ class App extends React.Component<any, AppProps> {
       rows.push(
         <tr key={key}>
           <td>{key}</td>
-          <ol>
-            {value.map((e) => (<li>{e}</li>))}
-          </ol>
+          <td>
+            <ol>
+              {value.map((e, i) => (<li key={i}>{e}</li>))}
+            </ol>
+          </td>
         </tr>
       )
     })
