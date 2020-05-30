@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9093ce02aeb2e9523ffcccfcd41367c4",
+    "revision": "dc8efe9e1ab9fa584cfda1de81b90156",
     "url": "/invert-ml/index.html"
   },
   {
-    "revision": "f4562f8190bb036eeee9",
+    "revision": "76e5a5848529f20ddb5e",
     "url": "/invert-ml/static/css/main.4fe59034.chunk.css"
   },
   {
-    "revision": "e548e4f11476e99ae14f",
-    "url": "/invert-ml/static/js/2.bbabf038.chunk.js"
+    "revision": "e066b21a8359fa495895",
+    "url": "/invert-ml/static/js/2.8c7ec7b2.chunk.js"
   },
   {
     "revision": "e6191615acbaa88870aef4cd0368e4ec",
-    "url": "/invert-ml/static/js/2.bbabf038.chunk.js.LICENSE.txt"
+    "url": "/invert-ml/static/js/2.8c7ec7b2.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f4562f8190bb036eeee9",
-    "url": "/invert-ml/static/js/main.49fb02b1.chunk.js"
+    "revision": "76e5a5848529f20ddb5e",
+    "url": "/invert-ml/static/js/main.b542848b.chunk.js"
   },
   {
     "revision": "7b3746c42ac5e0f90d9c",

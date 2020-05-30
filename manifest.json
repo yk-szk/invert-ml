@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "逆引きメーリングリスト",
+  "name": "逆引きメーリングリスト",
   "icons": [
     {
       "src": "favicon.ico",
