@@ -97,8 +97,6 @@ class App extends React.Component<any, AppProps> {
         const ml_addrs = body.map(row => row[col_ml_addr])
         const members = body.map(row => row[col_ml_member].split('\n').filter(e => e.length > 0))
         const addr2ml = invert(ml_addrs, members)
-        console.log(addr2ml);
-        console.log(this);
         this.setState({
           rows: addr2ml,
         });
