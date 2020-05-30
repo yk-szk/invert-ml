@@ -24,6 +24,7 @@ tr {
 
 thead th {
   padding: .3em;
+  border-left: 1px solid white;
 }
 
 tbody td {
@@ -45,4 +46,31 @@ tbody > tr:nth-child(even) {
 
 tbody > tr:nth-child(odd) {
   background: white;
+}
+
+details.config[open] summary::after {
+  content: attr(data-open);
+}
+
+details.config:not([open]) summary::after {
+  content: attr(data-close);
+}
+
+div#configs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+label::after {
+  content: ":";
+}
+
+div.row {
+  width: 100%;
+  margin: .2em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

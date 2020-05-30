@@ -31,7 +31,8 @@ function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
 }
 
 interface AppProps {
-  header: string[],
+  col_key: string,
+  col_value: string,
   rows: Map<string, string[]>,
 }
 
@@ -39,9 +40,12 @@ class App extends React.Component<any, AppProps> {
   constructor(props: AppProps) {
     super(props)
     this.state = {
-      header: ['メールアドレス', 'メーリングリスト'],
-      rows: new Map<string, string[]>(),
+      col_key: 'MLアドレス',
+      col_value: 'MLメンバー',
+      rows: new Map<string, string[]>([['',['']]]), // initialize rows with one entry to show empty table in the page
     }
+
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleDrop(acceptedFiles: File[]) {
@@ -82,8 +86,8 @@ class App extends React.Component<any, AppProps> {
 
       parser.on('end', () => {
         console.log(header)
-        const key_col_name = 'MLアドレス';
-        const value_col_name = 'MLメンバー';
+        const key_col_name = this.state.col_key;
+        const value_col_name = this.state.col_value;
         const col_ml_addr = header.findIndex(name => name === key_col_name);
         if (col_ml_addr === -1) {
           alert('Could not find column ' + key_col_name);
@@ -108,6 +112,11 @@ class App extends React.Component<any, AppProps> {
     reader.readAsBinaryString(file)
   }
 
+  handleChange<T extends keyof AppProps, K extends AppProps[T]>(event: React.ChangeEvent<HTMLInputElement>) {
+    const { target: { id, value } } = event;
+    this.setState({ [id]: value } as unknown as Pick<AppProps, keyof AppProps>); // TODO: remove unknown
+  }
+
   render() {
     const rows = Array<React.ReactElement>();
     this.state.rows.forEach((value, key) => {
@@ -125,8 +134,8 @@ class App extends React.Component<any, AppProps> {
     const header = (
       <thead>
         <tr>
-          <th>{this.state.header[0]}</th>
-          <th>{this.state.header[1]}</th>
+          <th>{this.state.col_value}</th>
+          <th>{this.state.col_key}</th>
         </tr>
       </thead>
     )
@@ -141,6 +150,21 @@ class App extends React.Component<any, AppProps> {
             {rows}
           </tbody>
         </table>
+        <h2>設定</h2>
+        <details className="config">
+          <summary data-open="閉じる" data-close="開く"></summary>
+          <div id="configs">
+            <div className="row">
+              <label htmlFor="col_key">メーリングリストのヘッダ</label>
+              <input type="text" title='メーリングリストのヘッダ' id="col_key" value={this.state.col_key} onChange={this.handleChange} />
+            </div>
+            <div className="row">
+              <label htmlFor="col_value">メールアドレスのヘッダ</label>
+              <input type="text" title='メールアドレスのヘッダ' id="col_value" value={this.state.col_value} onChange={this.handleChange} />
+            </div>
+          </div>
+        </details>
+
       </div>
     )
   }
