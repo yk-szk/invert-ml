@@ -22,6 +22,10 @@ tr {
   border-bottom: 1px solid navy;
 }
 
+thead th {
+  padding: .3em;
+}
+
 tbody td {
   padding: 1em;
 }
