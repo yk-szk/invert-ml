@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "8cb661d9d965784991680c88b933ad8e",
+    "revision": "58a9242a04721cd9e0dd316c9b9e9211",
     "url": "/invert-ml/index.html"
   },
   {
