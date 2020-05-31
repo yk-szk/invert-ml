@@ -42,7 +42,7 @@ class App extends React.Component<any, AppProps> {
     this.state = {
       col_key: 'MLアドレス',
       col_value: 'MLメンバー',
-      rows: new Map<string, string[]>([['',['']]]), // initialize rows with one entry to show empty table in the page
+      rows: new Map<string, string[]>([['', ['']]]), // initialize rows with one entry to show empty table in the page
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -144,25 +144,35 @@ class App extends React.Component<any, AppProps> {
         <MyDropzone
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
         <h2>結果</h2>
-        <table>
+        <table className="result">
           {header}
           <tbody>
             {rows}
           </tbody>
         </table>
         <h2>設定</h2>
-        <details className="config">
+        <details className="dynamic">
           <summary data-open="閉じる" data-close="開く"></summary>
-          <div id="configs">
-            <div className="row">
-              <label htmlFor="col_key">メーリングリストのヘッダ</label>
-              <input type="text" title='メーリングリストのヘッダ' id="col_key" value={this.state.col_key} onChange={this.handleChange} />
-            </div>
-            <div className="row">
-              <label htmlFor="col_value">メールアドレスのヘッダ</label>
-              <input type="text" title='メールアドレスのヘッダ' id="col_value" value={this.state.col_value} onChange={this.handleChange} />
-            </div>
-          </div>
+          <table className="config">
+            <tbody>
+              <tr>
+                <td>
+                  <label htmlFor="col_key">メーリングリストのヘッダ</label>
+                </td>
+                <td>
+                  <input type="text" title='メーリングリストのヘッダ' id="col_key" value={this.state.col_key} onChange={this.handleChange} />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="col_value">メールアドレスのヘッダ</label>
+                </td>
+                <td>
+                  <input type="text" title='メールアドレスのヘッダ' id="col_value" value={this.state.col_value} onChange={this.handleChange} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </details>
 
       </div>

@@ -3,15 +3,28 @@ body {
   margin: auto;
 }
 
+@media screen and (max-width:960px) {
+  body {
+    padding-left: .5em;
+    padding-right: .5em;
+  }
+}
+
 .dropzone {
-  /* margin: 20px; */
-  padding: 20px;
+  padding: 1em;
   background-color: rgb(230, 230, 230);
   border: dotted rgb(190, 190, 190);
   color: gray;
 }
 
-table {
+.dropzone p {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+table.result {
   margin: auto;
   width: 100%;
   border: none;
@@ -24,11 +37,18 @@ tr {
 
 thead th {
   padding: .3em;
-  border-left: 1px solid white;
 }
 
-tbody td {
-  padding: 1em;
+table.result thead th:not(:first-child) {
+  border-left: 1px dotted lavender;
+}
+
+table.result tbody td:not(:first-child) {
+  border-left: 1px dotted navy;
+}
+
+table.result tbody td {
+  padding: .6em 1em .6em 1em;
 }
 
 ol {
@@ -42,37 +62,22 @@ thead {
   background: navy;
 }
 
-tbody > tr:nth-child(even) {
+table.result tbody > tr:nth-child(even) {
   background: lavender;
 }
 
-tbody > tr:nth-child(odd) {
+table.result tbody > tr:nth-child(odd) {
   background: white;
 }
 
-details.config[open] summary::after {
+details.dynamic[open] summary::after {
   content: attr(data-open);
 }
 
-details.config:not([open]) summary::after {
+details.dynamic:not([open]) summary::after {
   content: attr(data-close);
 }
 
-div#configs {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-label::after {
-  content: ":";
-}
-
-div.row {
-  width: 100%;
-  margin: .2em;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+table.config td {
+  padding: .2em;
 }
