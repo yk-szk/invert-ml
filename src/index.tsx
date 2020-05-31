@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react'
 import ReactDOM from 'react-dom';
 import { useDropzone } from 'react-dropzone'
+import iconv from "iconv-lite";
+import parse from 'csv-parse'
 import './index.css';
-const parse = require('csv-parse')
-const iconv = require("iconv-lite");
 
 function MyDropzone(props: any) {
   const onDrop = useCallback(props.onDrop, [])
@@ -56,8 +56,12 @@ class App extends React.Component<any, AppProps> {
     reader.onerror = () => alert('file reading has failed')
     reader.onload = () => {
       // Do whatever you want with the file contents
-      const binaryStr = reader.result
-      const decodedStr = iconv.decode(binaryStr, "windows-31j")
+      if (!(reader.result instanceof ArrayBuffer)) {
+        alert('Something went wrong with FileReader');
+        return;
+      }
+      const binary = reader.result;
+      const decodedStr = iconv.decode(Buffer.from(binary), "windows-31j")
 
       let header: string[] = [];
       const body: string[][] = [];
@@ -65,7 +69,7 @@ class App extends React.Component<any, AppProps> {
       // Create the parser
       const parser = parse({
         delimiter: ',',
-        skipEmptyLines: true,
+        skip_empty_lines: true,
       })
       // Use the readable stream api
       parser.on('readable', () => {
@@ -109,10 +113,10 @@ class App extends React.Component<any, AppProps> {
       parser.write(decodedStr)
       parser.end()
     }
-    reader.readAsBinaryString(file)
+    reader.readAsArrayBuffer(file)
   }
 
-  handleChange<T extends keyof AppProps, K extends AppProps[T]>(event: React.ChangeEvent<HTMLInputElement>) {
+  handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { target: { id, value } } = event;
     this.setState({ [id]: value } as unknown as Pick<AppProps, keyof AppProps>); // TODO: remove unknown
   }
