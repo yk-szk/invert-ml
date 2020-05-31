@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/invert-ml/precache-manifest.fc36f135e04ca6e9963d2791423bd621.js"
+  "/invert-ml/precache-manifest.62b4d79f23f9838806970f9a2fd843d2.js"
 );
 
 self.addEventListener('message', (event) => {
