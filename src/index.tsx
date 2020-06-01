@@ -34,6 +34,7 @@ interface AppProps {
   col_key: string,
   col_value: string,
   rows: Map<string, string[]>,
+  error: string,
 }
 
 class App extends React.Component<any, AppProps> {
@@ -43,6 +44,7 @@ class App extends React.Component<any, AppProps> {
       col_key: 'MLアドレス',
       col_value: 'MLメンバー',
       rows: new Map<string, string[]>([['', ['']]]), // initialize rows with one entry to show empty table in the page
+      error: '',
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -57,7 +59,9 @@ class App extends React.Component<any, AppProps> {
     reader.onload = () => {
       // Do whatever you want with the file contents
       if (!(reader.result instanceof ArrayBuffer)) {
-        alert('Something went wrong with FileReader');
+        this.setState({
+          error: 'Something went wrong with FileReader',
+        })
         return;
       }
       const binary = reader.result;
@@ -84,9 +88,10 @@ class App extends React.Component<any, AppProps> {
       })
       // Catch any error
       parser.on('error', (err: any) => {
-        alert(err.message)
+        this.setState({
+          error: 'CSVのパースに失敗しました。' + err.message,
+        })
       })
-
 
       parser.on('end', () => {
         console.log(header)
@@ -94,12 +99,16 @@ class App extends React.Component<any, AppProps> {
         const value_col_name = this.state.col_value;
         const col_ml_addr = header.findIndex(name => name === key_col_name);
         if (col_ml_addr === -1) {
-          alert('Could not find column ' + key_col_name);
+          this.setState({
+            error: '[' + key_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
+          })
           return;
         }
         const col_ml_member = header.findIndex(name => name === value_col_name);
         if (col_ml_member === -1) {
-          alert('Could not find column ' + value_col_name);
+          this.setState({
+            error: '[' + value_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
+          })
           return;
         }
         const ml_addrs = body.map(row => row[col_ml_addr])
@@ -107,9 +116,9 @@ class App extends React.Component<any, AppProps> {
         const addr2ml = invert(ml_addrs, members)
         this.setState({
           rows: addr2ml,
+          error: '',
         });
       })
-
       parser.write(decodedStr)
       parser.end()
     }
@@ -122,40 +131,59 @@ class App extends React.Component<any, AppProps> {
   }
 
   render() {
-    const rows = Array<React.ReactElement>();
-    this.state.rows.forEach((value, key) => {
-      rows.push(
-        <tr key={key}>
-          <td>{key}</td>
-          <td>
-            <ol>
-              {value.map((e, i) => (<li key={i}>{e}</li>))}
-            </ol>
-          </td>
-        </tr>
+    let result: React.ReactElement;
+    if (this.state.error !== '') {
+      result = (
+        <div>
+          <h2 className="error">エラー</h2>
+          <div className="error">
+            <p>
+              {this.state.error}
+            </p>
+          </div>
+        </div>
       )
-    })
-    const header = (
-      <thead>
-        <tr>
-          <th>{this.state.col_value}</th>
-          <th>{this.state.col_key}</th>
-        </tr>
-      </thead>
-    )
+    } else {
+      const rows = Array<React.ReactElement>();
+      this.state.rows.forEach((value, key) => {
+        rows.push(
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <ol>
+                {value.map((e, i) => (<li key={i}>{e}</li>))}
+              </ol>
+            </td>
+          </tr>
+        )
+      })
+      const header = (
+        <thead>
+          <tr>
+            <th>{this.state.col_value}</th>
+            <th>{this.state.col_key}</th>
+          </tr>
+        </thead>
+      )
+      result = (
+        <div>
+          <h2>結果</h2>
+          <table className="result">
+            {header}
+            <tbody>
+              {rows}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
     return (
       <div className="container">
         <MyDropzone
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
-        <h2>結果</h2>
-        <table className="result">
-          {header}
-          <tbody>
-            {rows}
-          </tbody>
-        </table>
+        {result}
         <h2>設定</h2>
-        <details className="dynamic">
+        <details className="dynamic" open={this.state.error !== ""}>
           <summary data-open="閉じる" data-close="開く"></summary>
           <table className="config">
             <tbody>
