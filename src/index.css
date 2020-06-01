@@ -81,3 +81,7 @@ details.dynamic:not([open]) summary::after {
 table.config td {
   padding: .2em;
 }
+
+div.container {
+  margin-bottom: 2em;
+}

@@ -144,7 +144,7 @@ class App extends React.Component<any, AppProps> {
       </thead>
     )
     return (
-      <div>
+      <div className="container">
         <MyDropzone
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
         <h2>結果</h2>
