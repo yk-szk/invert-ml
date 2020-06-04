@@ -30,24 +30,39 @@ function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
   return inverted;
 }
 
+type ColumnsType = { key: string, value: string };
+
 interface AppProps {
-  col_key: string,
-  col_value: string,
+  cols: ColumnsType,
+  preset1_disabled: boolean,
+  preset2_disabled: boolean,
   rows: Map<string, string[]>,
   error: string,
 }
 
+function describe_preset_button(p: ColumnsType) {
+  return '"' + p.key + '"と"' + p.value + '"をセットします。';
+}
+function equal_cols(c1: ColumnsType, c2: ColumnsType) {
+  return c1.key === c2.key && c1.value === c2.value;
+}
+const preset1_cols: ColumnsType = { key: 'MLアドレス', value: 'MLメンバー' };
+const preset2_cols: ColumnsType = { key: 'MLメールアドレス(編集不可)', value: 'メンバー' };
+
 class App extends React.Component<any, AppProps> {
+
   constructor(props: AppProps) {
     super(props)
     this.state = {
-      col_key: 'MLアドレス',
-      col_value: 'MLメンバー',
+      cols: preset1_cols,
+      preset1_disabled: true,
+      preset2_disabled: false,
       rows: new Map<string, string[]>([['', ['']]]), // initialize rows with one entry to show empty table in the page
       error: '',
     }
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
   }
 
   handleDrop(acceptedFiles: File[]) {
@@ -95,8 +110,8 @@ class App extends React.Component<any, AppProps> {
 
       parser.on('end', () => {
         console.log(header)
-        const key_col_name = this.state.col_key;
-        const value_col_name = this.state.col_value;
+        const key_col_name = this.state.cols.key;
+        const value_col_name = this.state.cols.value;
         const col_ml_addr = header.findIndex(name => name === key_col_name);
         if (col_ml_addr === -1) {
           this.setState({
@@ -127,7 +142,40 @@ class App extends React.Component<any, AppProps> {
 
   handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const { target: { id, value } } = event;
-    this.setState({ [id]: value } as unknown as Pick<AppProps, keyof AppProps>); // TODO: remove unknown
+    const cols: ColumnsType = { ...this.state.cols };
+    if (id === 'col_key') {
+      cols.key = value;
+    }
+    if (id === 'col_value') {
+      cols.value = value;
+    }
+    const p1_disabled = equal_cols(preset1_cols, cols);
+    const p2_disabled = equal_cols(preset2_cols, cols);
+    console.log(cols, preset1_cols, p1_disabled);
+    this.setState({
+      cols: cols,
+      preset1_disabled: p1_disabled,
+      preset2_disabled: p2_disabled
+    })
+  }
+
+  handleButtonClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    const id = event.currentTarget.id;
+    let cols: ColumnsType;
+    let p1_disabled = false;
+    let p2_disabled = false;
+    if (id === 'btn_preset1') {
+      cols = preset1_cols;
+      p1_disabled = true;
+    } else {
+      cols = preset2_cols;
+      p2_disabled = true;
+    }
+    this.setState({
+      cols: cols,
+      preset1_disabled: p1_disabled,
+      preset2_disabled: p2_disabled
+    })
   }
 
   render() {
@@ -160,8 +208,8 @@ class App extends React.Component<any, AppProps> {
       const header = (
         <thead>
           <tr>
-            <th>{this.state.col_value}</th>
-            <th>{this.state.col_key}</th>
+            <th>{this.state.cols.key}</th>
+            <th>{this.state.cols.value}</th>
           </tr>
         </thead>
       )
@@ -192,7 +240,7 @@ class App extends React.Component<any, AppProps> {
                   <label htmlFor="col_key">メーリングリストのヘッダ</label>
                 </td>
                 <td>
-                  <input type="text" title='メーリングリストのヘッダ' id="col_key" value={this.state.col_key} onChange={this.handleChange} />
+                  <input type="text" id="col_key" value={this.state.cols.key} onChange={this.handleChange} />
                 </td>
               </tr>
               <tr>
@@ -200,11 +248,13 @@ class App extends React.Component<any, AppProps> {
                   <label htmlFor="col_value">メールアドレスのヘッダ</label>
                 </td>
                 <td>
-                  <input type="text" title='メールアドレスのヘッダ' id="col_value" value={this.state.col_value} onChange={this.handleChange} />
+                  <input type="text" id="col_value" value={this.state.cols.value} onChange={this.handleChange} />
                 </td>
               </tr>
             </tbody>
           </table>
+          <button disabled={this.state.preset1_disabled} id="btn_preset1" onClick={this.handleButtonClick} title={this.state.preset1_disabled?"":describe_preset_button(preset1_cols)}>プリセット1(統計確認)</button>
+          <button disabled={this.state.preset2_disabled} id="btn_preset2" onClick={this.handleButtonClick} title={this.state.preset2_disabled?"":describe_preset_button(preset2_cols)}>プリセット2(ML管理)</button>
         </details>
 
       </div>

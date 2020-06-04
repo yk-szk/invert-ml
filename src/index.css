@@ -104,6 +104,7 @@ h2.error::before, h2.error::after {
 }
 
 h2.error {
+  border: none;
   display: inline-block;
   padding: .1em .4em .1em .4em;
   margin-bottom: 0;
@@ -120,7 +121,6 @@ body h2 {
 div.header{
   margin: 0;
   padding: 2rem;
-  width: 100%;
   background: navy;
   color: white;
 }
@@ -133,4 +133,27 @@ h2.subtitle {
   margin: 0;
   padding-left: 1rem;
   font-size: 1rem;
+}
+
+button {
+  font-size: 1rem;
+  margin: 1rem;
+  padding: .5rem 1rem .5rem 1rem;
+  background: navy;
+  color: white;
+  border: none;
+  border-radius: .2rem;
+  box-shadow: .1rem .1rem .1rem gray;
+  transition:all .2s;
+}
+
+button:hover:enabled {
+  background: #4141E2;
+  box-shadow: .1rem .1rem .4rem gray;
+}
+
+button:disabled {
+  box-shadow: none;
+  background: lightgray;
+  color: gray;
 }
