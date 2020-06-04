@@ -1,10 +1,16 @@
 body {
+  margin: 0;
+  padding: 0;
+}
+
+div.container {
   max-width: 960px;
   margin: auto;
+  padding-top: 2em;
 }
 
 @media screen and (max-width:960px) {
-  body {
+  div.container {
     padding-left: .5em;
     padding-right: .5em;
   }
@@ -103,4 +109,28 @@ h2.error {
   margin-bottom: 0;
   background: pink;
   color: white;
+}
+
+body h2 {
+  display: inline-block;
+  border-bottom: solid navy .1em;
+  padding: 0 .5em 0 .5em;
+}
+
+div.header{
+  margin: 0;
+  padding: 2rem;
+  width: 100%;
+  background: navy;
+  color: white;
+}
+
+h1.title {
+  margin: 0;
+}
+
+h2.subtitle {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: 1rem;
 }
