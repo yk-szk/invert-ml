@@ -31,13 +31,12 @@ function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
 }
 
 type ColumnsType = { key: string, value: string };
-
-interface AppProps {
+type ResultType = Map<string, string[]> | string | null;
+interface AppState {
   cols: ColumnsType,
   preset1_disabled: boolean,
   preset2_disabled: boolean,
-  rows: Map<string, string[]>,
-  error: string,
+  result: ResultType,
 }
 
 function describe_preset_button(p: ColumnsType) {
@@ -49,16 +48,15 @@ function equal_cols(c1: ColumnsType, c2: ColumnsType) {
 const preset1_cols: ColumnsType = { key: 'MLアドレス', value: 'MLメンバー' };
 const preset2_cols: ColumnsType = { key: 'MLメールアドレス(編集不可)', value: 'メンバー' };
 
-class App extends React.Component<any, AppProps> {
+class App extends React.Component<{}, AppState> {
 
-  constructor(props: AppProps) {
+  constructor(props: {}) {
     super(props)
     this.state = {
       cols: preset1_cols,
       preset1_disabled: true,
       preset2_disabled: false,
-      rows: new Map<string, string[]>([['', ['']]]), // initialize rows with one entry to show empty table in the page
-      error: '',
+      result: null,
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -75,7 +73,7 @@ class App extends React.Component<any, AppProps> {
       // Do whatever you want with the file contents
       if (!(reader.result instanceof ArrayBuffer)) {
         this.setState({
-          error: 'Something went wrong with FileReader',
+          result: 'Something went wrong with FileReader',
         })
         return;
       }
@@ -104,7 +102,7 @@ class App extends React.Component<any, AppProps> {
       // Catch any error
       parser.on('error', (err: any) => {
         this.setState({
-          error: 'CSVのパースに失敗しました。' + err.message,
+          result: 'CSVのパースに失敗しました。' + err.message,
         })
       })
 
@@ -115,14 +113,14 @@ class App extends React.Component<any, AppProps> {
         const col_ml_addr = header.findIndex(name => name === key_col_name);
         if (col_ml_addr === -1) {
           this.setState({
-            error: '[' + key_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
+            result: '[' + key_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
           })
           return;
         }
         const col_ml_member = header.findIndex(name => name === value_col_name);
         if (col_ml_member === -1) {
           this.setState({
-            error: '[' + value_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
+            result: '[' + value_col_name + ']が見つかりませんでした。ヘッダは次の中から選ぶ必要があります。{' + header.join(', ') + '}',
           })
           return;
         }
@@ -130,8 +128,7 @@ class App extends React.Component<any, AppProps> {
         const members = body.map(row => row[col_ml_member].split('\n').filter(e => e.length > 0))
         const addr2ml = invert(ml_addrs, members)
         this.setState({
-          rows: addr2ml,
-          error: '',
+          result: addr2ml,
         });
       })
       parser.write(decodedStr)
@@ -180,31 +177,35 @@ class App extends React.Component<any, AppProps> {
 
   render() {
     let result: React.ReactElement;
-    if (this.state.error !== '') {
+    if (typeof this.state.result === 'string') {
       result = (
         <div>
           <h2 className="error">エラー</h2>
           <div className="error">
             <p>
-              {this.state.error}
+              {this.state.result}
             </p>
           </div>
         </div>
       )
     } else {
       const rows = Array<React.ReactElement>();
-      this.state.rows.forEach((value, key) => {
-        rows.push(
-          <tr key={key}>
-            <td>{key}</td>
-            <td>
-              <ol>
-                {value.map((e, i) => (<li key={i}>{e}</li>))}
-              </ol>
-            </td>
-          </tr>
-        )
-      })
+      if (this.state.result === null) {
+        // rows.push
+      } else {
+        this.state.result.forEach((value, key) => {
+          rows.push(
+            <tr key={key}>
+              <td>{key}</td>
+              <td>
+                <ol>
+                  {value.map((e, i) => (<li key={i}>{e}</li>))}
+                </ol>
+              </td>
+            </tr>
+          )
+        })
+      }
       const header = (
         <thead>
           <tr>
@@ -231,7 +232,7 @@ class App extends React.Component<any, AppProps> {
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
         {result}
         <h2>設定</h2>
-        <details className="dynamic" open={this.state.error !== ""}>
+        <details className="dynamic" open={typeof this.state.result !== 'string'}>
           <summary data-open="閉じる" data-close="開く"></summary>
           <table className="config">
             <tbody>
@@ -253,8 +254,8 @@ class App extends React.Component<any, AppProps> {
               </tr>
             </tbody>
           </table>
-          <button disabled={this.state.preset1_disabled} id="btn_preset1" onClick={this.handleButtonClick} title={this.state.preset1_disabled?"":describe_preset_button(preset1_cols)}>プリセット1(統計確認)</button>
-          <button disabled={this.state.preset2_disabled} id="btn_preset2" onClick={this.handleButtonClick} title={this.state.preset2_disabled?"":describe_preset_button(preset2_cols)}>プリセット2(ML管理)</button>
+          <button disabled={this.state.preset1_disabled} id="btn_preset1" onClick={this.handleButtonClick} title={this.state.preset1_disabled ? "" : describe_preset_button(preset1_cols)}>プリセット1(統計確認)</button>
+          <button disabled={this.state.preset2_disabled} id="btn_preset2" onClick={this.handleButtonClick} title={this.state.preset2_disabled ? "" : describe_preset_button(preset2_cols)}>プリセット2(ML管理)</button>
         </details>
 
       </div>
