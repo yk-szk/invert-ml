@@ -103,6 +103,12 @@ h2.error::before, h2.error::after {
   content: "⚠️";
 }
 
+.container h2 {
+  display: inline-block;
+  border-bottom: solid navy .1em;
+  padding: 0 .5em 0 .5em;
+}
+
 h2.error {
   border: none;
   display: inline-block;
@@ -110,12 +116,6 @@ h2.error {
   margin-bottom: 0;
   background: pink;
   color: white;
-}
-
-body h2 {
-  display: inline-block;
-  border-bottom: solid navy .1em;
-  padding: 0 .5em 0 .5em;
 }
 
 div#header_container {
