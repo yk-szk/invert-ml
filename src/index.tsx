@@ -191,8 +191,13 @@ class App extends React.Component<{}, AppState> {
     } else {
       const rows = Array<React.ReactElement>();
       if (this.state.result === null) {
-        // rows.push
-      } else {
+        rows.push(
+          <tr>
+            <td></td>
+            <td></td>
+          </tr>
+        )
+    } else {
         this.state.result.forEach((value, key) => {
           rows.push(
             <tr key={key}>
