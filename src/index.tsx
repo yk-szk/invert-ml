@@ -36,6 +36,7 @@ const PRESETS: ReadonlyArray<PresetType> = [
   { name: 'ML管理', cols: { key: 'MLメールアドレス(編集不可)', value: 'メンバー' } }
 ];
 const PRESET_BUTTON_PREFIX = 'btn_preset';
+
 function Result(props: { result: ResultType, cols: ColumnsType }) {
   if (typeof props.result === 'string') {
     return (
@@ -93,6 +94,24 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
   }
 }
 
+function Buttons(props: { preset_disabled: boolean[], onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }) {
+  const buttons = props.preset_disabled.map((preset_disabled, index) => {
+    const attributes = {
+      id: "btn_preset" + String(index),
+      key: index,
+      disabled: preset_disabled,
+      onClick: props.onClick,
+      title: preset_disabled ? "すでにセットされています。" : describe_preset_button(PRESETS[index].cols),
+    };
+    return <button {...attributes}>プリセット{index + 1}({PRESETS[index].name})</button>
+  })
+  return (
+    <>
+      {buttons}
+    </>
+  )
+}
+
 function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
   let uniq_values = new Set<T>(values.reduce((sum, e) => sum.concat(e), []));
   const all_values = Array.from(uniq_values).sort()
@@ -100,7 +119,6 @@ function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
   keys.map((key, key_index) => values[key_index].map(value => inverted.get(value)!.push(key)))
   return inverted;
 }
-
 
 function describe_preset_button(p: ColumnsType) {
   return '"' + p.key + '"と"' + p.value + '"をセットします。';
@@ -224,16 +242,6 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    const buttons = this.state.preset_disabled.map((preset_disabled, index) => {
-      const attributes = {
-        id: "btn_preset" + String(index),
-        key: index,
-        disabled: preset_disabled,
-        onClick: this.handleButtonClick,
-        title: preset_disabled ? "すでにセットされています。" : describe_preset_button(PRESETS[index].cols),
-      };
-      return <button {...attributes}>プリセット{index + 1}({PRESETS[index].name})</button>
-    })
     return (
       <div className="container">
         <MyDropzone
@@ -262,7 +270,7 @@ class App extends React.Component<{}, AppState> {
               </tr>
             </tbody>
           </table>
-          {buttons}
+          <Buttons preset_disabled={this.state.preset_disabled} onClick={this.handleButtonClick} />
         </details>
 
       </div>
