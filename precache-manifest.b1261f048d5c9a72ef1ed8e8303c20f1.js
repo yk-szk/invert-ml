@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "be3a1d0d1e20afdeb9ae953ecf2bbeb6",
+    "revision": "cd11657648943bdf551f2807c34a97bb",
     "url": "/invert-ml/index.html"
   },
   {
-    "revision": "8da4c7f50ff84f326f96",
-    "url": "/invert-ml/static/css/main.b0203f24.chunk.css"
+    "revision": "d15924f8c0e721777ae5",
+    "url": "/invert-ml/static/css/main.0cb45dee.chunk.css"
   },
   {
     "revision": "52209229797f85ca59fd",
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/invert-ml/static/js/2.0a068427.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "8da4c7f50ff84f326f96",
-    "url": "/invert-ml/static/js/main.fe48f20f.chunk.js"
+    "revision": "d15924f8c0e721777ae5",
+    "url": "/invert-ml/static/js/main.0c903821.chunk.js"
   },
   {
     "revision": "7b3746c42ac5e0f90d9c",
