@@ -34,10 +34,16 @@ type ColumnsType = { key: string, value: string };
 type ResultType = Map<string, string[]> | string | null;
 interface AppState {
   cols: ColumnsType,
-  preset1_disabled: boolean,
-  preset2_disabled: boolean,
+  preset_disabled: boolean[],
   result: ResultType,
 }
+
+type PresetType = { name: string, cols: ColumnsType };
+const PRESETS: ReadonlyArray<PresetType> = [
+  { name: '統計確認', cols: { key: 'MLアドレス', value: 'MLメンバー' } },
+  { name: 'ML管理', cols: { key: 'MLメールアドレス(編集不可)', value: 'メンバー' } }
+];
+const PRESET_BUTTON_PREFIX = 'btn_preset';
 
 function describe_preset_button(p: ColumnsType) {
   return '"' + p.key + '"と"' + p.value + '"をセットします。';
@@ -45,17 +51,14 @@ function describe_preset_button(p: ColumnsType) {
 function equal_cols(c1: ColumnsType, c2: ColumnsType) {
   return c1.key === c2.key && c1.value === c2.value;
 }
-const preset1_cols: ColumnsType = { key: 'MLアドレス', value: 'MLメンバー' };
-const preset2_cols: ColumnsType = { key: 'MLメールアドレス(編集不可)', value: 'メンバー' };
 
 class App extends React.Component<{}, AppState> {
 
   constructor(props: {}) {
     super(props)
     this.state = {
-      cols: preset1_cols,
-      preset1_disabled: true,
-      preset2_disabled: false,
+      cols: PRESETS[0].cols,
+      preset_disabled: PRESETS.map(preset => equal_cols(preset.cols, PRESETS[0].cols)),
       result: null,
     }
 
@@ -146,32 +149,20 @@ class App extends React.Component<{}, AppState> {
     if (id === 'col_value') {
       cols.value = value;
     }
-    const p1_disabled = equal_cols(preset1_cols, cols);
-    const p2_disabled = equal_cols(preset2_cols, cols);
-    console.log(cols, preset1_cols, p1_disabled);
     this.setState({
       cols: cols,
-      preset1_disabled: p1_disabled,
-      preset2_disabled: p2_disabled
+      preset_disabled: PRESETS.map(preset => equal_cols(preset.cols, PRESETS[0].cols)),
     })
   }
 
   handleButtonClick(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     const id = event.currentTarget.id;
-    let cols: ColumnsType;
-    let p1_disabled = false;
-    let p2_disabled = false;
-    if (id === 'btn_preset1') {
-      cols = preset1_cols;
-      p1_disabled = true;
-    } else {
-      cols = preset2_cols;
-      p2_disabled = true;
-    }
+    const button_index = parseInt(id.replace(PRESET_BUTTON_PREFIX, ''));
+    let preset_disabled = Array<boolean>(PRESETS.length).fill(false);
+    preset_disabled[button_index] = true;
     this.setState({
-      cols: cols,
-      preset1_disabled: p1_disabled,
-      preset2_disabled: p2_disabled
+      cols: PRESETS[button_index].cols,
+      preset_disabled: preset_disabled,
     })
   }
 
@@ -192,12 +183,12 @@ class App extends React.Component<{}, AppState> {
       const rows = Array<React.ReactElement>();
       if (this.state.result === null) {
         rows.push(
-          <tr>
+          <tr key='0'>
             <td></td>
             <td></td>
           </tr>
         )
-    } else {
+      } else {
         this.state.result.forEach((value, key) => {
           rows.push(
             <tr key={key}>
@@ -231,6 +222,16 @@ class App extends React.Component<{}, AppState> {
         </div>
       )
     }
+    const buttons = this.state.preset_disabled.map((preset_disabled, index) => {
+      const attributes = {
+        id: "btn_preset" + String(index),
+        key: index,
+        disabled: preset_disabled,
+        onClick: this.handleButtonClick,
+        title: preset_disabled ? "すでにセットされています。" : describe_preset_button(PRESETS[index].cols),
+      };
+      return <button {...attributes}>プリセット{index + 1}({PRESETS[index].name})</button>
+    })
     return (
       <div className="container">
         <MyDropzone
@@ -259,8 +260,7 @@ class App extends React.Component<{}, AppState> {
               </tr>
             </tbody>
           </table>
-          <button disabled={this.state.preset1_disabled} id="btn_preset1" onClick={this.handleButtonClick} title={this.state.preset1_disabled ? "" : describe_preset_button(preset1_cols)}>プリセット1(統計確認)</button>
-          <button disabled={this.state.preset2_disabled} id="btn_preset2" onClick={this.handleButtonClick} title={this.state.preset2_disabled ? "" : describe_preset_button(preset2_cols)}>プリセット2(ML管理)</button>
+          {buttons}
         </details>
 
       </div>
