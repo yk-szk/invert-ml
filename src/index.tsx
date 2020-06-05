@@ -22,14 +22,6 @@ function MyDropzone(props: any) {
   )
 }
 
-function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
-  let uniq_values = new Set<T>(values.reduce((sum, e) => sum.concat(e), []));
-  const all_values = Array.from(uniq_values).sort()
-  const inverted = new Map<T, S[]>(all_values.map(value => [value, []]));
-  keys.map((key, key_index) => values[key_index].map(value => inverted.get(value)!.push(key)))
-  return inverted;
-}
-
 type ColumnsType = { key: string, value: string };
 type ResultType = Map<string, string[]> | string | null;
 interface AppState {
@@ -44,6 +36,71 @@ const PRESETS: ReadonlyArray<PresetType> = [
   { name: 'ML管理', cols: { key: 'MLメールアドレス(編集不可)', value: 'メンバー' } }
 ];
 const PRESET_BUTTON_PREFIX = 'btn_preset';
+function Result(props: { result: ResultType, cols: ColumnsType }) {
+  if (typeof props.result === 'string') {
+    return (
+      <div>
+        <h2 className="error">エラー</h2>
+        <div className="error">
+          <p>
+            {props.result}
+          </p>
+        </div>
+      </div>
+    )
+  } else {
+    const rows = Array<React.ReactElement>();
+    if (props.result === null) {
+      rows.push(
+        <tr key='0'>
+          <td></td>
+          <td></td>
+        </tr>
+      )
+    } else {
+      props.result.forEach((value, key) => {
+        rows.push(
+          <tr key={key}>
+            <td>{key}</td>
+            <td>
+              <ol>
+                {value.map((e, i) => (<li key={i}>{e}</li>))}
+              </ol>
+            </td>
+          </tr>
+        )
+      })
+    }
+    const header = (
+      <thead>
+        <tr>
+          <th>{props.cols.key}</th>
+          <th>{props.cols.value}</th>
+        </tr>
+      </thead>
+    )
+    return (
+      <div>
+        <h2>結果</h2>
+        <table className="result">
+          {header}
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+}
+
+function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
+  let uniq_values = new Set<T>(values.reduce((sum, e) => sum.concat(e), []));
+  const all_values = Array.from(uniq_values).sort()
+  const inverted = new Map<T, S[]>(all_values.map(value => [value, []]));
+  keys.map((key, key_index) => values[key_index].map(value => inverted.get(value)!.push(key)))
+  return inverted;
+}
+
 
 function describe_preset_button(p: ColumnsType) {
   return '"' + p.key + '"と"' + p.value + '"をセットします。';
@@ -167,61 +224,6 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    let result: React.ReactElement;
-    if (typeof this.state.result === 'string') {
-      result = (
-        <div>
-          <h2 className="error">エラー</h2>
-          <div className="error">
-            <p>
-              {this.state.result}
-            </p>
-          </div>
-        </div>
-      )
-    } else {
-      const rows = Array<React.ReactElement>();
-      if (this.state.result === null) {
-        rows.push(
-          <tr key='0'>
-            <td></td>
-            <td></td>
-          </tr>
-        )
-      } else {
-        this.state.result.forEach((value, key) => {
-          rows.push(
-            <tr key={key}>
-              <td>{key}</td>
-              <td>
-                <ol>
-                  {value.map((e, i) => (<li key={i}>{e}</li>))}
-                </ol>
-              </td>
-            </tr>
-          )
-        })
-      }
-      const header = (
-        <thead>
-          <tr>
-            <th>{this.state.cols.key}</th>
-            <th>{this.state.cols.value}</th>
-          </tr>
-        </thead>
-      )
-      result = (
-        <div>
-          <h2>結果</h2>
-          <table className="result">
-            {header}
-            <tbody>
-              {rows}
-            </tbody>
-          </table>
-        </div>
-      )
-    }
     const buttons = this.state.preset_disabled.map((preset_disabled, index) => {
       const attributes = {
         id: "btn_preset" + String(index),
@@ -236,7 +238,7 @@ class App extends React.Component<{}, AppState> {
       <div className="container">
         <MyDropzone
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
-        {result}
+        <Result result={this.state.result} cols={this.state.cols} />
         <h2>設定</h2>
         <details className="dynamic" open={typeof this.state.result !== 'string'}>
           <summary data-open="閉じる" data-close="開く"></summary>
