@@ -112,6 +112,41 @@ function Buttons(props: { preset_disabled: boolean[], onClick: (event: React.Mou
   )
 }
 
+function Config(props: {
+  result: ResultType, cols: ColumnsType, onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  preset_disabled: boolean[], onButtonClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+}) {
+  return (
+    <>
+      <h2>設定</h2>
+      <details className="dynamic" open={typeof props.result !== 'string'}>
+        <summary data-open="閉じる" data-close="開く"></summary>
+        <table className="config">
+          <tbody>
+            <tr>
+              <td>
+                <label htmlFor="col_key">メーリングリストのヘッダ</label>
+              </td>
+              <td>
+                <input type="text" id="col_key" value={props.cols.key} onChange={props.onChange} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label htmlFor="col_value">メールアドレスのヘッダ</label>
+              </td>
+              <td>
+                <input type="text" id="col_value" value={props.cols.value} onChange={props.onChange} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <Buttons preset_disabled={props.preset_disabled} onClick={props.onButtonClick} />
+      </details>
+    </>
+  )
+}
+
 function invert<S, T>(keys: S[], values: T[][]): Map<T, S[]> {
   let uniq_values = new Set<T>(values.reduce((sum, e) => sum.concat(e), []));
   const all_values = Array.from(uniq_values).sort()
@@ -247,36 +282,11 @@ class App extends React.Component<{}, AppState> {
         <MyDropzone
           onDrop={(acceptedFiles: File[]) => this.handleDrop(acceptedFiles)} />
         <Result result={this.state.result} cols={this.state.cols} />
-        <h2>設定</h2>
-        <details className="dynamic" open={typeof this.state.result !== 'string'}>
-          <summary data-open="閉じる" data-close="開く"></summary>
-          <table className="config">
-            <tbody>
-              <tr>
-                <td>
-                  <label htmlFor="col_key">メーリングリストのヘッダ</label>
-                </td>
-                <td>
-                  <input type="text" id="col_key" value={this.state.cols.key} onChange={this.handleChange} />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <label htmlFor="col_value">メールアドレスのヘッダ</label>
-                </td>
-                <td>
-                  <input type="text" id="col_value" value={this.state.cols.value} onChange={this.handleChange} />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <Buttons preset_disabled={this.state.preset_disabled} onClick={this.handleButtonClick} />
-        </details>
-
+        <Config result={this.state.result} cols={this.state.cols} onChange={this.handleChange}
+          preset_disabled={this.state.preset_disabled} onButtonClick={this.handleButtonClick} />
       </div>
     )
   }
-
 }
 
 ReactDOM.render(
