@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/invert-ml/static/css/main.0cb45dee.chunk.css",
-    "main.js": "/invert-ml/static/js/main.0c903821.chunk.js",
-    "main.js.map": "/invert-ml/static/js/main.0c903821.chunk.js.map",
+    "main.js": "/invert-ml/static/js/main.14d33e22.chunk.js",
+    "main.js.map": "/invert-ml/static/js/main.14d33e22.chunk.js.map",
     "runtime-main.js": "/invert-ml/static/js/runtime-main.412d3a43.js",
     "runtime-main.js.map": "/invert-ml/static/js/runtime-main.412d3a43.js.map",
-    "static/js/2.0a068427.chunk.js": "/invert-ml/static/js/2.0a068427.chunk.js",
-    "static/js/2.0a068427.chunk.js.map": "/invert-ml/static/js/2.0a068427.chunk.js.map",
+    "static/js/2.1752a164.chunk.js": "/invert-ml/static/js/2.1752a164.chunk.js",
+    "static/js/2.1752a164.chunk.js.map": "/invert-ml/static/js/2.1752a164.chunk.js.map",
     "index.html": "/invert-ml/index.html",
-    "precache-manifest.b1261f048d5c9a72ef1ed8e8303c20f1.js": "/invert-ml/precache-manifest.b1261f048d5c9a72ef1ed8e8303c20f1.js",
+    "precache-manifest.cfb473a5a67108fc3741e37284dd5d26.js": "/invert-ml/precache-manifest.cfb473a5a67108fc3741e37284dd5d26.js",
     "service-worker.js": "/invert-ml/service-worker.js",
     "static/css/main.0cb45dee.chunk.css.map": "/invert-ml/static/css/main.0cb45dee.chunk.css.map",
-    "static/js/2.0a068427.chunk.js.LICENSE.txt": "/invert-ml/static/js/2.0a068427.chunk.js.LICENSE.txt"
+    "static/js/2.1752a164.chunk.js.LICENSE.txt": "/invert-ml/static/js/2.1752a164.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.412d3a43.js",
-    "static/js/2.0a068427.chunk.js",
+    "static/js/2.1752a164.chunk.js",
     "static/css/main.0cb45dee.chunk.css",
-    "static/js/main.0c903821.chunk.js"
+    "static/js/main.14d33e22.chunk.js"
   ]
 }
