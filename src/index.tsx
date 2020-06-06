@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { useDropzone } from 'react-dropzone'
 import iconv from "iconv-lite";
 import parse from 'csv-parse'
+import { CSVLink } from "react-csv";
+
 import './index.css';
 
 function MyDropzone(props: any) {
@@ -51,6 +53,7 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
     )
   } else {
     const rows = Array<React.ReactElement>();
+    let download: React.ReactElement = <></>;
     if (props.result === null) {
       rows.push(
         <tr key='0'>
@@ -59,6 +62,7 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
         </tr>
       )
     } else {
+      const csv_data = [[props.cols.key, props.cols.value]];
       props.result.forEach((value, key) => {
         rows.push(
           <tr key={key}>
@@ -70,7 +74,13 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
             </td>
           </tr>
         )
+        csv_data.push([key, value.join('\n')])
       })
+      download = (
+        <CSVLink data={csv_data} filename='inverted.csv'>
+          <button title='結果をダウンロード'>ダウンロード</button>
+        </CSVLink>
+      )
     }
     const header = (
       <thead>
@@ -80,6 +90,7 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
         </tr>
       </thead>
     )
+
     return (
       <div>
         <h2>結果</h2>
@@ -89,6 +100,7 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
             {rows}
           </tbody>
         </table>
+        {download}
       </div>
     )
   }
@@ -97,7 +109,7 @@ function Result(props: { result: ResultType, cols: ColumnsType }) {
 function Buttons(props: { preset_disabled: boolean[], onClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void }) {
   const buttons = props.preset_disabled.map((preset_disabled, index) => {
     const attributes = {
-      id: "btn_preset" + String(index),
+      id: PRESET_BUTTON_PREFIX + String(index),
       key: index,
       disabled: preset_disabled,
       onClick: props.onClick,
@@ -144,6 +156,7 @@ function Config(props: {
         <Buttons preset_disabled={props.preset_disabled} onClick={props.onButtonClick} />
       </details>
     </>
+
   )
 }
 
@@ -220,7 +233,6 @@ class App extends React.Component<{}, AppState> {
       })
 
       parser.on('end', () => {
-        console.log(header)
         const key_col_name = this.state.cols.key;
         const value_col_name = this.state.cols.value;
         const col_ml_addr = header.findIndex(name => name === key_col_name);
