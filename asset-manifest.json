@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/invert-ml/static/css/main.0cb45dee.chunk.css",
+    "main.css": "/invert-ml/static/css/main.a351f6bb.chunk.css",
     "main.js": "/invert-ml/static/js/main.14d33e22.chunk.js",
     "main.js.map": "/invert-ml/static/js/main.14d33e22.chunk.js.map",
     "runtime-main.js": "/invert-ml/static/js/runtime-main.412d3a43.js",
@@ -8,15 +8,15 @@
     "static/js/2.1752a164.chunk.js": "/invert-ml/static/js/2.1752a164.chunk.js",
     "static/js/2.1752a164.chunk.js.map": "/invert-ml/static/js/2.1752a164.chunk.js.map",
     "index.html": "/invert-ml/index.html",
-    "precache-manifest.cfb473a5a67108fc3741e37284dd5d26.js": "/invert-ml/precache-manifest.cfb473a5a67108fc3741e37284dd5d26.js",
+    "precache-manifest.813c17f8562e0abdf06dc4dd388b9114.js": "/invert-ml/precache-manifest.813c17f8562e0abdf06dc4dd388b9114.js",
     "service-worker.js": "/invert-ml/service-worker.js",
-    "static/css/main.0cb45dee.chunk.css.map": "/invert-ml/static/css/main.0cb45dee.chunk.css.map",
+    "static/css/main.a351f6bb.chunk.css.map": "/invert-ml/static/css/main.a351f6bb.chunk.css.map",
     "static/js/2.1752a164.chunk.js.LICENSE.txt": "/invert-ml/static/js/2.1752a164.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.412d3a43.js",
     "static/js/2.1752a164.chunk.js",
-    "static/css/main.0cb45dee.chunk.css",
+    "static/css/main.a351f6bb.chunk.css",
     "static/js/main.14d33e22.chunk.js"
   ]
 }
